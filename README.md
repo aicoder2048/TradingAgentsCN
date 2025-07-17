@@ -27,6 +27,17 @@
 
 # TradingAgents: Multi-Agents LLM Financial Trading Framework 
 
+> ⭐ **This is a Chinese localized fork of TradingAgents**
+>
+> 🔗 **Original Repository**: [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents)
+>
+> 🌟 **Features of this fork**:
+> - Complete Chinese language support for all trading reports
+> - Enhanced documentation in Chinese
+> - Improved dependency management with modern tools
+>
+> 🙏 **Credits**: Special thanks to [TauricResearch](https://github.com/TauricResearch) for creating this amazing framework!
+
 > 🎉 **TradingAgents** officially released! We have received numerous inquiries about the work, and we would like to express our thanks for the enthusiasm in our community.
 >
 > So we decided to fully open-source the framework. Looking forward to building impactful projects with you!
@@ -95,22 +106,25 @@ Our framework decomposes complex trading tasks into specialized roles. This ensu
 
 ### Installation
 
-Clone TradingAgents:
+Clone this Chinese localized version:
 ```bash
-git clone https://github.com/TauricResearch/TradingAgents.git
-cd TradingAgents
+git clone https://github.com/aicoder2048/TradingAgentsCN.git
+cd TradingAgentsCN
 ```
 
-Create a virtual environment in any of your favorite environment managers:
+Install dependencies using uv (recommended):
 ```bash
-conda create -n tradingagents python=3.13
-conda activate tradingagents
+# Install uv if you haven't already
+pip install uv
+
+# Install all dependencies with proper version locking
+uv sync
+
+# Add additional packages if needed
+uv add package_name
 ```
 
-Install dependencies:
-```bash
-pip install -r requirements.txt
-```
+> **Note:** This project uses modern Python dependency management with `uv` and `pyproject.toml`. This ensures reproducible installations and faster dependency resolution compared to traditional pip.
 
 ### Required APIs
 
@@ -191,6 +205,53 @@ print(decision)
 > For `online_tools`, we recommend enabling them for experimentation, as they provide access to real-time data. The agents' offline tools rely on cached data from our **Tauric TradingDB**, a curated dataset we use for backtesting. We're currently in the process of refining this dataset, and we plan to release it soon alongside our upcoming projects. Stay tuned!
 
 You can view the full list of configurations in `tradingagents/default_config.py`.
+
+## Fork维护指南 (Fork Maintenance Guide)
+
+如果你Fork了这个项目进行自己的开发（比如汉化版本），以下是保持与原仓库同步的最佳实践：
+
+### 同步原仓库更新
+
+定期同步上游仓库的最新更改：
+
+```bash
+# 获取上游仓库的最新更改
+git fetch upstream
+
+# 合并到你的主分支
+git checkout main
+git merge upstream/main
+
+# 推送到你的Fork
+git push origin main
+```
+
+### 处理合并冲突
+
+当你的修改与上游更新冲突时：
+
+1. **识别冲突文件**：Git会标记冲突的文件
+2. **手动解决冲突**：编辑文件，保留需要的更改
+3. **提交解决方案**：
+   ```bash
+   git add .
+   git commit -m "解决与上游的合并冲突"
+   git push origin main
+   ```
+
+### 分支管理建议
+
+- **main分支**：保持与上游同步，包含你的核心修改（如汉化）
+- **feature分支**：开发新功能时创建独立分支
+- **定期同步**：建议每周或在上游有重大更新时同步
+
+### 保持Fork活跃
+
+- 定期检查上游是否有重要的bug修复或新功能
+- 在README中说明你的Fork的特色（如汉化支持）
+- 考虑将有价值的改进提交回上游项目
+
+> **提示**：通过 `git pull upstream main` 可以快速同步原仓库更新到你的本地分支。
 
 ## Contributing
 
