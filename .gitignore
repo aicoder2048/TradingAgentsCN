@@ -6,3 +6,9 @@ src/
 eval_results/
 eval_data/
 *.egg-info/
+
+# Environment variables
+.env
+
+# Results directory
+results/
