@@ -24,8 +24,17 @@ python main.py
 
 ### Required Environment Variables
 - `FINNHUB_API_KEY`: Required for financial data (free tier available)
-- `OPENAI_API_KEY`: Required for LLM agents
+- `OPENAI_API_KEY`: Required for OpenAI LLM agents
+- `DEEPSEEK_API_KEY`: Required for DeepSeek LLM agents (推荐，通常有较好的免费配额)
+- `MOONSHOT_API_KEY`: Required for Kimi LLM agents (注意配额限制)
+- `ANTHROPIC_API_KEY`: Required for Anthropic LLM agents
+- `GOOGLE_API_KEY`: Required for Google LLM agents
 - `TRADINGAGENTS_RESULTS_DIR`: Optional, defaults to "./results"
+
+**注意**: 
+- 各 API 提供商都有不同的配额限制和定价策略
+- 建议优先使用 DeepSeek，通常有更好的免费配额
+- 如果遇到配额错误，请检查对应平台的账户状态
 
 ## Architecture Overview
 
