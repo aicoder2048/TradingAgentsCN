@@ -114,8 +114,8 @@ cd TradingAgentsCN
 
 Install dependencies using uv (recommended):
 ```bash
-# Install uv if you haven't already
-pip install uv
+# Install uv if you haven't already (macOS)
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Install all dependencies with proper version locking
 uv sync
@@ -142,7 +142,7 @@ export OPENAI_API_KEY=$YOUR_OPENAI_API_KEY
 
 You can also try out the CLI directly by running:
 ```bash
-python -m cli.main
+uv run -m cli.main
 ```
 You will see a screen where you can select your desired tickers, date, LLMs, research depth, etc.
 
