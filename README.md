@@ -128,15 +128,22 @@ uv add package_name
 
 ### Required APIs
 
-You will also need the FinnHub API for financial data. All of our code is implemented with the free tier.
+Set up your API keys using the .env file (recommended):
 ```bash
-export FINNHUB_API_KEY=$YOUR_FINNHUB_API_KEY
+# Copy the sample file and edit with your API keys
+cp .env.sample .env
+# Edit .env file with your actual API keys
 ```
 
-You will need the OpenAI API for all the agents.
-```bash
-export OPENAI_API_KEY=$YOUR_OPENAI_API_KEY
-```
+The project now supports automatic .env file loading, so you don't need to manually export environment variables.
+
+**Required API Keys:**
+- **FinnHub API**: Get free tier at [finnhub.io](https://finnhub.io/)
+- **OpenAI API**: Get your key at [platform.openai.com](https://platform.openai.com/api-keys)
+
+**Optional API Keys** (for alternative LLM providers):
+- **Anthropic API**: For Claude models
+- **Google API**: For Gemini models
 
 ### CLI Usage
 
