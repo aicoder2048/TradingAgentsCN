@@ -152,6 +152,12 @@ def select_shallow_thinking_agent(provider) -> str:
             ("Meta: Llama 3.3 8B Instruct - A lightweight and ultra-fast variant of Llama 3.3 70B", "meta-llama/llama-3.3-8b-instruct:free"),
             ("google/gemini-2.0-flash-exp:free - Gemini Flash 2.0 offers a significantly faster time to first token", "google/gemini-2.0-flash-exp:free"),
         ],
+        "deepseek": [
+            ("DeepSeek Chat - 通用对话模型（推荐）", "deepseek-chat"),
+        ],
+        "moonshot（海外版）": [
+            ("Kimi K2 Preview - 最新K2模型", "kimi-k2-0711-preview"),
+        ],
         "ollama": [
             ("llama3.1 local", "llama3.1"),
             ("llama3.2 local", "llama3.2"),
@@ -214,6 +220,13 @@ def select_deep_thinking_agent(provider) -> str:
             ("DeepSeek V3 - a 685B-parameter, mixture-of-experts model", "deepseek/deepseek-chat-v3-0324:free"),
             ("Deepseek - latest iteration of the flagship chat model family from the DeepSeek team.", "deepseek/deepseek-chat-v3-0324:free"),
         ],
+        "deepseek": [
+            ("DeepSeek Chat - 通用对话模型（推荐）", "deepseek-chat"),
+            ("DeepSeek Reasoner - 推理特化模型", "deepseek-reasoner"),
+        ],
+        "moonshot（海外版）": [
+            ("Kimi K2 Preview - 最新K2模型", "kimi-k2-0711-preview"),
+        ],
         "ollama": [
             ("llama3.1 local", "llama3.1"),
             ("qwen3", "qwen3"),
@@ -250,6 +263,8 @@ def select_llm_provider() -> tuple[str, str]:
         ("Anthropic", "https://api.anthropic.com/"),
         ("Google", "https://generativelanguage.googleapis.com/v1"),
         ("Openrouter", "https://openrouter.ai/api/v1"),
+        ("DeepSeek", "https://api.deepseek.com"),
+        ("Moonshot（海外版）", "https://api.moonshot.ai/v1"),
         ("Ollama", "http://localhost:11434/v1"),        
     ]
     
