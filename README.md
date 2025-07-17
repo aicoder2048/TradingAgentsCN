@@ -32,9 +32,11 @@
 > 🔗 **原始仓库**: [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents)
 >
 > 🌟 **本Fork版本特色**:
-> - 完整的中文交易报告支持
-> - 增强的中文文档
-> - 现代化的依赖管理工具
+> - 🇨🇳 完整的中文交易报告支持
+> - 📚 增强的中文文档和API指南
+> - ⚡ 现代化的依赖管理工具（uv + pyproject.toml）
+> - 🔌 扩展的LLM提供商支持（DeepSeek、Moonshot等）
+> - 💰 成本优化的模型选择建议
 >
 > 🙏 **致谢**: 特别感谢 [TauricResearch](https://github.com/TauricResearch) 创建了这个出色的框架！
 
@@ -135,6 +137,22 @@ cp .env.sample .env
 # 编辑 .env 文件填入真实的API密钥
 ```
 
+**.env 文件示例**：
+```bash
+# 必需的API密钥
+FINNHUB_API_KEY=your_finnhub_api_key_here
+OPENAI_API_KEY=your_openai_api_key_here
+
+# 可选的LLM提供商API密钥
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+GOOGLE_API_KEY=your_google_api_key_here
+DEEPSEEK_API_KEY=your_deepseek_api_key_here
+MOONSHOT_API_KEY=your_moonshot_api_key_here
+
+# 可选的结果保存目录
+TRADINGAGENTS_RESULTS_DIR=./results
+```
+
 项目现在支持自动 .env 文件加载，无需手动导出环境变量。
 
 **必需的API密钥：**
@@ -142,8 +160,10 @@ cp .env.sample .env
 - **OpenAI API**: 在 [platform.openai.com](https://platform.openai.com/api-keys) 获取密钥
 
 **可选的API密钥**（用于其他大语言模型提供商）：
-- **Anthropic API**: 用于 Claude 模型
-- **Google API**: 用于 Gemini 模型
+- **Anthropic API**: 用于 Claude 模型 - [console.anthropic.com](https://console.anthropic.com/)
+- **Google API**: 用于 Gemini 模型 - [aistudio.google.com](https://aistudio.google.com/apikey)
+- **DeepSeek API**: 用于 DeepSeek 模型（高性价比选择）- [platform.deepseek.com](https://platform.deepseek.com/api_keys)
+- **Moonshot API**: 用于 Kimi K2 模型（海外版）- [platform.moonshot.ai](https://platform.moonshot.ai/)
 
 ### CLI 使用
 
@@ -172,6 +192,20 @@ uv run -m cli.main
 ### 实现详情
 
 我们使用 LangGraph 构建 TradingAgents 以确保灵活性和模块化。在实验中我们使用 `o1-preview` 和 `gpt-4o` 作为深度思考和快速思考的大语言模型。但是，出于测试目的，我们推荐您使用 `o4-mini` 和 `gpt-4.1-mini` 来节省成本，因为我们的框架会进行**大量**API调用。
+
+### 支持的大语言模型提供商
+
+本框架支持多种大语言模型提供商，用户可以根据成本和性能需求选择：
+
+- **OpenAI**: GPT-4o、o1、o3 系列模型
+- **Anthropic**: Claude 3.5/4 系列模型  
+- **Google**: Gemini 2.0/2.5 系列模型
+- **DeepSeek**: DeepSeek-Chat、DeepSeek-Reasoner（高性价比）
+- **Moonshot（海外版）**: Kimi K2 模型（长上下文支持）
+- **OpenRouter**: 多种开源模型（免费额度）
+- **Ollama**: 本地部署模型支持
+
+> **成本优化建议**: DeepSeek 提供了极具竞争力的定价，是成本敏感用户的理想选择。Moonshot（海外版）的 Kimi K2 模型在长文档处理方面表现优异。
 
 ### Python 使用方法
 
