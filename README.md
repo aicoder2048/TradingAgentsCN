@@ -247,6 +247,100 @@ print(decision)
 
 您可以在 `tradingagents/default_config.py` 中查看完整的配置列表。
 
+## 报告合并工具
+
+TradingAgents 现在包含一个强大的报告合并工具，可以将多个独立的分析报告合并成一份完整的交易分析报告，并支持生成美观的 HTML 格式。
+
+### 功能特点
+
+- 📊 **智能合并**：自动按逻辑顺序合并基本面分析、技术分析、投资策略、交易计划和最终决策
+- 🎨 **多主题支持**：13 种精心设计的颜色主题，包括浅色、深色、竹绿、海洋蓝、樱花粉等
+- 📱 **响应式设计**：自动适配不同屏幕尺寸，支持手机、平板和桌面浏览
+- 🖨️ **打印优化**：所有主题都针对打印进行了优化，深色主题会自动转换为浅色
+- 🚀 **交互式界面**：友好的命令行交互界面，无需记忆复杂的命令参数
+
+### 使用方法
+
+#### 1. 交互式模式（推荐）
+
+最简单的使用方式，只需运行：
+
+```bash
+# 使用 uv 运行（推荐）
+uv run -m cli.gen_final_report
+
+# 或直接运行 Python 文件
+uv run cli/gen_final_report.py
+```
+
+交互式界面会引导您：
+1. 输入报告目录路径（例如：`results/NVDA/2025-07-17/reports`）
+2. 选择样式（简单或专业）
+3. 如果选择专业样式，可以选择喜欢的主题
+
+#### 2. 命令行模式
+
+如果您熟悉命令行，也可以直接指定参数：
+
+```bash
+# 基本用法
+uv run -m cli.gen_final_report results/NVDA/2025-07-17/reports
+
+# 指定样式和主题
+uv run -m cli.gen_final_report results/NVDA/2025-07-17/reports --style professional --theme ocean
+
+# 使用简单样式
+uv run -m cli.gen_final_report results/NVDA/2025-07-17/reports --style simple
+```
+
+### 可用主题
+
+- **light** (浅色) - 适合打印和日间阅读
+- **dark** (深色) - 适合夜间阅读
+- **auto** (自动) - 跟随系统偏好设置
+- **bamboo** (竹绿) 🎋 - 清新自然的绿色调
+- **ocean** (海洋蓝) 🌊 - 深邃宁静的蓝色调
+- **apricot** (暖杏黄) 🍑 - 温暖舒适的杏黄色
+- **sakura** (樱花粉) 🌸 - 优雅浪漫的粉色调
+- **dawn** (晨曦橙) 🌅 - 活力充沛的橙色调
+- **violet** (紫罗兰) 🔮 - 神秘优雅的紫色调
+- **mint** (薄荷青) 🌿 - 清爽醒目的青色调
+- **aurora** (极光紫) 🌌 - 深邃神秘的夜空紫
+- **steel** (钢铁灰) ⚙️ - 专业现代的金属灰
+- **rock** (岩石灰) 🗿 - 沉稳大气的深灰色
+
+### 查看生成的报告
+
+报告生成后，工具会显示生成文件的完整路径。您可以通过以下方式查看：
+
+```bash
+# macOS
+open results/NVDA/2025-07-17/reports/complete_trading_analysis_2025-07-17_ocean.html
+
+# Linux
+xdg-open results/NVDA/2025-07-17/reports/complete_trading_analysis_2025-07-17_ocean.html
+
+# Windows
+start results/NVDA/2025-07-17/reports/complete_trading_analysis_2025-07-17_ocean.html
+```
+
+或者直接在浏览器中打开生成的 HTML 文件。
+
+### 前置要求
+
+报告合并工具需要 `pandoc` 来生成 HTML 格式。如果系统未安装，工具会提示安装方法：
+
+```bash
+# macOS
+brew install pandoc
+
+# Ubuntu/Debian
+sudo apt-get install pandoc
+
+# Windows (使用 Chocolatey)
+choco install pandoc
+```
+
 ## Fork维护指南 (Fork Maintenance Guide)
 
 如果你Fork了这个项目进行自己的开发（比如汉化版本），以下是保持与原仓库同步的最佳实践：
