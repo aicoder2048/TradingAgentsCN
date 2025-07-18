@@ -30,6 +30,8 @@ app = typer.Typer(
 REQUIRED_REPORTS = [
     ("fundamentals_report.md", "基本面分析报告"),
     ("market_report.md", "技术面分析报告"),
+    ("news_report.md", "新闻分析报告"),
+    ("sentiment_report.md", "情绪分析报告"),
     ("investment_plan.md", "投资策略报告"),
     ("trader_investment_plan.md", "交易员执行方案"),
     ("final_trade_decision.md", "最终交易决策"),
@@ -103,17 +105,47 @@ def merge_reports(report_dir: Path, ticker: str, date: str) -> str:
     """
     # 读取当前股价（从基本面报告中提取）
     fundamentals_path = report_dir / "fundamentals_report.md"
-    current_price = "$171.37"  # 默认值
+    current_price = None
     
     try:
         with open(fundamentals_path, "r", encoding="utf-8") as f:
             content = f.read()
-            # 尝试提取当前股价
-            price_match = re.search(r"\*\*当前股价\*\*:\s*([\d.]+)", content)
-            if price_match:
-                current_price = f"${price_match.group(1)}"
-    except:
-        pass
+            
+            # 定义多个匹配模式以适应不同的报告格式
+            patterns = [
+                # 匹配表格格式：| 当前股价 | 328.8美元
+                r'\|\s*当前股价\s*\|\s*([\d.]+)美元',
+                # 匹配粗体格式：**当前股价**: 328.8
+                r'\*\*当前股价\*\*[:\s]*([\d.]+)',
+                # 匹配直接文本：股价为328.80美元
+                r'股价为([\d.]+)美元',
+                # 匹配开头描述：TSLA的股价为328.80美元
+                r'[A-Z]+的股价为([\d.]+)美元',
+                # 匹配：当前股价为328.8美元
+                r'当前股价为([\d.]+)美元'
+            ]
+            
+            # 尝试所有模式
+            for pattern in patterns:
+                price_match = re.search(pattern, content)
+                if price_match:
+                    current_price = f"${price_match.group(1)}"
+                    break
+            
+            # 如果仍无法提取，尝试从文件第一行提取
+            if not current_price:
+                lines = content.split('\n')
+                if lines:
+                    # 查找第一行中的价格信息
+                    first_line_match = re.search(r'([\d.]+)美元', lines[0])
+                    if first_line_match:
+                        current_price = f"${first_line_match.group(1)}"
+    except Exception as e:
+        console.print(f"[yellow]警告: 读取基本面报告时出错: {e}[/yellow]")
+    
+    # 如果无法提取股价，使用明确的错误提示
+    if not current_price:
+        current_price = "未能提取（请检查基本面报告）"
     
     # 构建报告头部
     merged_content = f"""# {ticker} 完整交易分析报告
@@ -128,9 +160,11 @@ def merge_reports(report_dir: Path, ticker: str, date: str) -> str:
 
 1. [基本面分析](#1-基本面分析)
 2. [技术面分析](#2-技术面分析)
-3. [投资策略制定](#3-投资策略制定)
-4. [交易员执行计划](#4-交易员执行计划)
-5. [最终交易决策](#5-最终交易决策)
+3. [新闻分析](#3-新闻分析)
+4. [情绪分析](#4-情绪分析)
+5. [投资策略制定](#5-投资策略制定)
+6. [交易员执行计划](#6-交易员执行计划)
+7. [最终交易决策](#7-最终交易决策)
 
 ---
 
@@ -140,9 +174,11 @@ def merge_reports(report_dir: Path, ticker: str, date: str) -> str:
     section_titles = [
         "## 1. 基本面分析\n\n",
         "## 2. 技术面分析\n\n",
-        "## 3. 投资策略制定\n\n",
-        "## 4. 交易员执行计划\n\n",
-        "## 5. 最终交易决策\n\n",
+        "## 3. 新闻分析\n\n",
+        "## 4. 情绪分析\n\n",
+        "## 5. 投资策略制定\n\n",
+        "## 6. 交易员执行计划\n\n",
+        "## 7. 最终交易决策\n\n",
     ]
     
     # 按顺序合并报告
