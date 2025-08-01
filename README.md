@@ -165,6 +165,24 @@ TRADINGAGENTS_RESULTS_DIR=./results
 - **DeepSeek API**: 用于 DeepSeek 模型（高性价比选择）- [platform.deepseek.com](https://platform.deepseek.com/api_keys)
 - **Moonshot API**: 用于 Kimi K2 模型（海外版）- [platform.moonshot.ai](https://platform.moonshot.ai/)
 
+### 系统依赖（可选但推荐）
+
+报告生成工具需要 `pandoc` 来将 Markdown 转换为美观的 HTML 格式。虽然不是必需的（缺少时仍可生成 Markdown 报告），但强烈建议安装以获得完整功能：
+
+```bash
+# macOS
+brew install pandoc
+
+# Ubuntu/Debian
+sudo apt-get install pandoc
+
+# Windows (使用 Chocolatey)
+choco install pandoc
+
+# 其他平台
+# 访问 https://pandoc.org/installing.html 获取安装说明
+```
+
 ### CLI 使用
 
 您可以直接运行CLI来体验：

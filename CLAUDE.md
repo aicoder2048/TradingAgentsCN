@@ -6,105 +6,123 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Setup and Installation
 ```bash
-# Install dependencies
+# Install dependencies using uv (recommended - modern, fast package manager)
+uv sync
+
+# Or traditional pip installation
 pip install -r requirements.txt
-
-# Or install with uv for faster package management
-uv pip install -r requirements.txt
 ```
 
-### CLI Usage
+### Running the Project
 ```bash
-# Run the interactive CLI for trading analysis
-python -m cli.main
+# Interactive CLI for trading analysis (recommended)
+uv run -m cli.main
 
-# Direct Python usage
-python main.py
+# Direct execution for programmatic usage
+uv run main.py
+
+# Generate comprehensive trading report from existing analyses
+uv run -m cli.gen_final_report results/NVDA/2025-07-17/reports
 ```
 
-### Required Environment Variables
-- `FINNHUB_API_KEY`: Required for financial data (free tier available)
-- `OPENAI_API_KEY`: Required for OpenAI LLM agents
-- `DEEPSEEK_API_KEY`: Required for DeepSeek LLM agents (推荐，通常有较好的免费配额)
-- `MOONSHOT_API_KEY`: Required for Kimi LLM agents (注意配额限制)
-- `ANTHROPIC_API_KEY`: Required for Anthropic LLM agents
-- `GOOGLE_API_KEY`: Required for Google LLM agents
-- `TRADINGAGENTS_RESULTS_DIR`: Optional, defaults to "./results"
+**Note**: The report generation tool requires `pandoc` for HTML conversion. Install it with:
+- macOS: `brew install pandoc`
+- Ubuntu/Debian: `sudo apt-get install pandoc`
+- Windows: `choco install pandoc`
 
-**注意**: 
-- 各 API 提供商都有不同的配额限制和定价策略
-- 建议优先使用 DeepSeek，通常有更好的免费配额
-- 如果遇到配额错误，请检查对应平台的账户状态
+### Environment Configuration
+Create a `.env` file in the project root (copy from `.env.sample`):
+- `FINNHUB_API_KEY`: Required for financial data (free tier at finnhub.io)
+- `OPENAI_API_KEY`: Required for OpenAI models
+- `DEEPSEEK_API_KEY`: Optional, for DeepSeek models (cost-effective)
+- `MOONSHOT_API_KEY`: Optional, for Kimi K2 models (overseas version)
+- `ANTHROPIC_API_KEY`: Optional, for Claude models
+- `GOOGLE_API_KEY`: Optional, for Gemini models
+- `TRADINGAGENTS_RESULTS_DIR`: Optional, defaults to "./results"
 
 ## Architecture Overview
 
 ### Core Framework
-TradingAgents is a multi-agent LLM trading framework built on LangGraph. The system simulates a real trading firm with specialized agents that collaborate to make trading decisions.
+TradingAgents is a multi-agent LLM trading framework built on LangGraph. It simulates a real trading firm with specialized agents collaborating through structured workflows.
 
-### Main Components
+### Key Components and Their Interactions
 
-#### 1. Multi-Agent System (`tradingagents/agents/`)
-- **Analysts**: Specialized analysis agents for different market aspects
-  - `fundamentals_analyst.py`: Company financials and performance metrics
-  - `news_analyst.py`: Global news and macroeconomic indicators
-  - `social_media_analyst.py`: Sentiment analysis from social platforms
-  - `market_analyst.py`: Technical indicators (MACD, RSI) and patterns
-- **Researchers**: Bull/bear debate system
-  - `bull_researcher.py` and `bear_researcher.py`: Critical assessment through structured debates
-- **Trader**: `trader.py` - Makes trading decisions based on analyst reports
-- **Risk Management**: Portfolio risk assessment and strategy evaluation
-  - `risk_mgmt/`: Contains aggressive, conservative, and neutral debators
+#### 1. Agent Network (`tradingagents/agents/`)
+**Analysts** - Data gathering and initial analysis:
+- `fundamentals_analyst.py`: Analyzes company financials, earnings, P/E ratios
+- `market_analyst.py`: Technical analysis using MACD, RSI, price patterns
+- `news_analyst.py`: Processes global news and macroeconomic indicators
+- `social_media_analyst.py`: Sentiment analysis from Reddit, social platforms
 
-#### 2. Graph Orchestration (`tradingagents/graph/`)
-- `trading_graph.py`: Main orchestration class `TradingAgentsGraph`
-- `propagation.py`: Forward propagation through the agent network
-- `conditional_logic.py`: Decision routing and conditional flows
-- `reflection.py`: Learning and memory management
-- `signal_processing.py`: Signal analysis and processing
+**Researchers** - Critical evaluation through debate:
+- `bull_researcher.py`: Advocates for positive outlook based on analyst reports
+- `bear_researcher.py`: Challenges with bearish perspectives
+- Debate process controlled by `max_debate_rounds` in config
 
-#### 3. Data Management (`tradingagents/dataflows/`)
-- `interface.py`: Data flow configuration and management
-- Financial data APIs: `finnhub_utils.py`, `yfin_utils.py`, `stockstats_utils.py`
-- News/sentiment data: `googlenews_utils.py`, `reddit_utils.py`
-- `data_cache/`: Cached financial data for offline analysis
+**Decision Makers**:
+- `trader.py`: Synthesizes all reports to make buy/sell/hold decisions
+- `risk_mgmt/`: Three debators (aggressive, conservative, neutral) evaluate risk
+- `managers/`: Research and risk managers coordinate agent activities
 
-#### 4. Configuration (`tradingagents/default_config.py`)
-Key configuration options:
-- `llm_provider`: "openai", "anthropic", or "google"
-- `deep_think_llm`/`quick_think_llm`: Model selection for different reasoning tasks
-- `max_debate_rounds`: Controls debate intensity
-- `online_tools`: Use real-time data vs cached data
+#### 2. LangGraph Orchestration (`tradingagents/graph/`)
+- `trading_graph.py`: Main class `TradingAgentsGraph` that coordinates entire workflow
+- `propagation.py`: Implements forward propagation through agent network
+- `conditional_logic.py`: Routes decisions based on agent outputs
+- `reflection.py`: Manages learning from past decisions
+- `signal_processing.py`: Processes trading signals from agents
 
-### Usage Patterns
+#### 3. Data Layer (`tradingagents/dataflows/`)
+- `interface.py`: Unified interface for all data sources
+- API integrations: `finnhub_utils.py`, `yfin_utils.py`, `stockstats_utils.py`
+- News/sentiment: `googlenews_utils.py`, `reddit_utils.py`
+- `data_cache/`: Pre-downloaded market data for offline testing
 
-#### Basic Usage
+### Configuration (`tradingagents/default_config.py`)
+Key settings that control behavior:
 ```python
-from tradingagents.graph.trading_graph import TradingAgentsGraph
-from tradingagents.default_config import DEFAULT_CONFIG
-
-ta = TradingAgentsGraph(debug=True, config=DEFAULT_CONFIG.copy())
-_, decision = ta.propagate("NVDA", "2024-05-10")
+{
+    "llm_provider": "openai",  # or "anthropic", "google"
+    "deep_think_llm": "o4-mini",  # For complex reasoning tasks
+    "quick_think_llm": "gpt-4o-mini",  # For quick decisions
+    "max_debate_rounds": 1,  # Number of bull/bear debate rounds
+    "max_risk_discuss_rounds": 1,  # Risk assessment iterations
+    "online_tools": True,  # Use live data vs cached
+}
 ```
 
-#### Custom Configuration
-```python
-config = DEFAULT_CONFIG.copy()
-config["deep_think_llm"] = "gpt-4o-mini"  # Cost-effective option
-config["max_debate_rounds"] = 2  # More thorough analysis
-config["online_tools"] = False  # Use cached data
-```
+### Workflow Execution Flow
+1. **Data Collection**: Analysts gather market data, news, sentiment
+2. **Analysis Phase**: Each analyst produces specialized reports
+3. **Research Debate**: Bull/bear researchers debate findings
+4. **Trading Decision**: Trader synthesizes all inputs
+5. **Risk Assessment**: Risk team evaluates proposed trades
+6. **Final Execution**: Portfolio manager approves/rejects
 
-### Key Design Principles
-- **Modular Agent Design**: Each agent has specific expertise and can be independently configured
-- **Debate-Driven Decisions**: Bull/bear researchers challenge analyst findings through structured debates
-- **Risk-Aware Trading**: Multi-layer risk assessment before execution
-- **Memory and Reflection**: Agents learn from past decisions through the reflection system
-- **Flexible LLM Integration**: Supports multiple LLM providers with role-specific model selection
+### Output Structure
+Results saved to `results/{TICKER}/{DATE}/`:
+- `reports/`: Individual agent reports (fundamentals, market, news, sentiment)
+- `trader_investment_plan.md`: Proposed trading strategy
+- `final_trade_decision.md`: Executed decision after risk review
+- `message_tool.log`: Complete agent communication log
 
-### Results and Output
-- Trading decisions and analysis reports are saved to `results/{TICKER}/{DATE}/`
-- Includes market reports, investment plans, and final trade decisions
-- Log files track the complete decision-making process
+### CLI Features (`cli/`)
+- `main.py`: Interactive interface for selecting stocks, dates, models
+- `gen_final_report.py`: Merges individual reports into comprehensive HTML
+- `models.py`: Data models for CLI operations
+- `static/welcome.txt`: ASCII art welcome screen
 
-### Testing and Validation
-The framework is designed for research purposes and includes extensive logging for analysis. Trading performance varies based on model selection, market conditions, and configuration parameters.
+### LLM Provider Integration
+Supports multiple providers with different cost/performance tradeoffs:
+- **OpenAI**: GPT-4o, o1 models (default)
+- **Anthropic**: Claude 3.5/4 series
+- **Google**: Gemini 2.0/2.5 series
+- **DeepSeek**: Cost-effective alternative
+- **Moonshot**: Kimi K2 for long context
+
+Provider-specific configuration in `ai_docs/` directory.
+
+### Development Notes
+- The framework uses extensive logging for debugging agent decisions
+- Memory system (`agents/utils/memory.py`) enables learning from past trades
+- Agent states (`agents/utils/agent_states.py`) maintain conversation context
+- All agents inherit from base classes in `agents/utils/agent_utils.py`
